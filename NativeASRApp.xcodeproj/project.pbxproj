@@ -6,8 +6,13 @@
 	objectVersion = 77;
 	objects = {
 
+/* Begin PBXBuildFile section */
+		21EE178E2F64FCA0001BB92A /* .gitignore in Resources */ = {isa = PBXBuildFile; fileRef = 21EE178C2F64FC99001BB92A /* .gitignore */; };
+/* End PBXBuildFile section */
+
 /* Begin PBXFileReference section */
 		21EE177E2F64F8A1001BB92A /* NativeASRApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = NativeASRApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		21EE178C2F64FC99001BB92A /* .gitignore */ = {isa = PBXFileReference; lastKnownFileType = text; path = .gitignore; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -34,6 +39,7 @@
 			children = (
 				21EE17802F64F8A1001BB92A /* NativeASRApp */,
 				21EE177F2F64F8A1001BB92A /* Products */,
+				21EE178C2F64FC99001BB92A /* .gitignore */,
 			);
 			sourceTree = "<group>";
 		};
@@ -109,6 +115,7 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				21EE178E2F64FCA0001BB92A /* .gitignore in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
