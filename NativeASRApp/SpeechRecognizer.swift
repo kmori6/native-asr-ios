@@ -136,10 +136,27 @@ final class SpeechRecognizer: ObservableObject {
     }
     
     func stopRecognition() {
+        if audioEngine.isRunning {
+            audioEngine.stop()
+            audioEngine.inputNode.removeTap(onBus: 0)
+        }
         
+        recognitionRequest?.endAudio()
+        recognitionRequest = nil
+        
+        recognitionTask?.finish()
+        recognitionTask = nil
+        
+        isRecording = false
+        
+        do {
+            try AVAudioSession.sharedInstance().setActive(false, options: .notifyOthersOnDeactivation)
+        } catch {
+            errorMessage = error.localizedDescription
+        }
     }
     
     func clearTranscript() {
-        
+        transcript = ""
     }
 }
