@@ -32,6 +32,15 @@ private extension ContentView {
 
             Text(speechRecognizer.statusMessage)
                 .foregroundStyle(.secondary)
+            
+            Toggle("on device", isOn: $speechRecognizer.useOnDeviceRecognition)
+                .disabled(!speechRecognizer.supportsOnDeviceRecognition || speechRecognizer.isRecording)
+            
+            if !speechRecognizer.supportsOnDeviceRecognition {
+                Text("on device recognition is not available with this device and language.")
+                    .font(.caption)
+                    .foregroundColor(.secondary)
+            }
         }
     }
     

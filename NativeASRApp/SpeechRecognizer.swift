@@ -17,10 +17,17 @@ final class SpeechRecognizer: ObservableObject {
     @Published var statusMessage: String = "waiting"
     @Published var errorMessage: String?
     
+    @Published var useOnDeviceRecognition: Bool = false
+    @Published var supportsOnDeviceRecognition: Bool = false
+    
     private let audioEngine = AVAudioEngine()
     private let speechRecognizer = SFSpeechRecognizer(locale: Locale(identifier: "ja-JP"))
     private var recognitionRequest: SFSpeechAudioBufferRecognitionRequest?
     private var recognitionTask: SFSpeechRecognitionTask?
+    
+    init() {
+        supportsOnDeviceRecognition = speechRecognizer?.supportsOnDeviceRecognition ?? false
+    }
     
     func requestAuthorization() {
         statusMessage = "checking authorization..."
@@ -93,6 +100,8 @@ final class SpeechRecognizer: ObservableObject {
                 errorMessage = "speech recognition request is not available."
                 return
             }
+            recognitionRequest.shouldReportPartialResults = true
+            recognitionRequest.requiresOnDeviceRecognition = useOnDeviceRecognition
             
             // input node
             let inputNode = audioEngine.inputNode
@@ -127,7 +136,7 @@ final class SpeechRecognizer: ObservableObject {
             try audioEngine.start()
             
             isRecording = true
-            statusMessage = "recognizing..."
+            statusMessage = useOnDeviceRecognition ? "recognizing on device..." : "recognizing..."
             
         } catch {
             statusMessage = "record is not available."
