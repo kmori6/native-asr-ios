@@ -6,6 +6,8 @@
 //
 
 import Foundation
+import Speech
+import AVFAudio
 import Combine
 
 @MainActor
@@ -16,7 +18,43 @@ final class SpeechRecognizer: ObservableObject {
     @Published var errorMessage: String?
     
     func requestAuthorization() {
+        statusMessage = "checking authorization..."
+        errorMessage = nil
         
+        Task {
+            let speechStatus = await requestSpeechRecognitionAuthorization()
+            guard speechStatus == .authorized else {
+                statusMessage = "speech recognition is not available."
+                errorMessage = "speech recognition authorization failed."
+                return
+            }
+            
+            let microphoneStatus = await requestMicrophoneAuthorization()
+            guard microphoneStatus else {
+                statusMessage = "microphone access is not available."
+                errorMessage = "microphone authorization failed."
+                return
+            }
+            
+            statusMessage = "ready"
+            errorMessage = nil
+        }
+    }
+    
+    private func requestSpeechRecognitionAuthorization() async -> SFSpeechRecognizerAuthorizationStatus {
+        await withCheckedContinuation { continuation in
+            SFSpeechRecognizer.requestAuthorization { status in
+                continuation.resume(returning: status)
+            }
+        }
+    }
+    
+    private func requestMicrophoneAuthorization() async -> Bool {
+        await withCheckedContinuation { continuation in
+            AVAudioSession.sharedInstance().requestRecordPermission { granted in
+                continuation.resume(returning: granted)
+            }
+        }
     }
     
     func startRecognition() {
