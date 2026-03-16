@@ -52,9 +52,9 @@ private extension ContentView {
         HStack(spacing: 16) {
             Button(speechRecognizer.isRecording ? "Stop" : "Start") {
                 if speechRecognizer.isRecording {
-                    speechRecognizer.startRecognition()
-                } else {
                     speechRecognizer.stopRecognition()
+                } else {
+                    speechRecognizer.startRecognition()
                 }
             }
 
