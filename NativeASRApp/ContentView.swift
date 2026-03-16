@@ -8,10 +8,7 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var transcript: String = ""
-    @State private var isRecording: Bool = false
-    @State private var statusMessage: String = "waiting"
-    @State private var errorMessage: String? = nil
+    @StateObject private var speechRecognizer = SpeechRecognizer()
     
     var body: some View {
         VStack(spacing: 24) {
@@ -21,6 +18,9 @@ struct ContentView: View {
             errorSection
         }
         .padding(24)
+        .onAppear {
+            speechRecognizer.requestAuthorization()
+        }
     }
 }
 
@@ -30,7 +30,7 @@ private extension ContentView {
             Text("Native ASR")
                 .font(.largeTitle.bold())
 
-            Text(statusMessage)
+            Text(speechRecognizer.statusMessage)
                 .foregroundStyle(.secondary)
         }
     }
@@ -41,7 +41,7 @@ private extension ContentView {
                 .font(.headline)
             
             ScrollView {
-                Text(transcript.isEmpty ? "Display recognition results here." : transcript)
+                Text(speechRecognizer.transcript.isEmpty ? "Display recognition results here." : speechRecognizer.transcript)
                     .frame(maxWidth: .infinity, alignment: .leading)
             }
             .frame(maxHeight: .infinity)
@@ -50,20 +50,24 @@ private extension ContentView {
     
     var controlSection: some View {
         HStack(spacing: 16) {
-            Button(isRecording ? "Stop" : "Start") {
-                
+            Button(speechRecognizer.isRecording ? "Stop" : "Start") {
+                if speechRecognizer.isRecording {
+                    speechRecognizer.startRecognition()
+                } else {
+                    speechRecognizer.stopRecognition()
+                }
             }
 
             Button("Clear") {
-                
+                speechRecognizer.clearTranscript()
             }
         }
     }
     
     @ViewBuilder
     var errorSection: some View {
-        if let errorMessage {
-            Text(errorMessage)
+        if speechRecognizer.errorMessage != nil {
+            Text(speechRecognizer.errorMessage!)
                 .foregroundStyle(.red)
         }
     }
